@@ -51,6 +51,9 @@ public class AuthServiceTestCase extends FunctionalTestCase {
 		
 		WebResponse response = wc.getResponse(request);
 
+		System.out.println(response.getText());
+		System.out.println(response.getResponseMessage());
+		
 		assertEquals(200, response.getResponseCode());
 		
 	}

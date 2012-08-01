@@ -11,6 +11,7 @@
 	xmlns:management="http://www.mulesoft.org/schema/mule/management"
 	xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
 	xmlns:mule-xml="http://www.mulesoft.org/schema/mule/xml"
+	xmlns:json="http://www.mulesoft.org/schema/mule/json"
 	xsi:schemaLocation="
         http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/3.3/mule.xsd
         http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/3.3/mule-http.xsd
@@ -25,6 +26,7 @@
         http://www.mulesoft.org/schema/mule/management http://www.mulesoft.org/schema/mule/management/3.3/mule-management.xsd
         http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/3.3/mule-scripting.xsd
         http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/3.3/mule-xml.xsd
+        http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/3.3/mule-json.xsd
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
@@ -38,23 +40,45 @@
 
 	<http:endpoint name="authorizationInbound"
 		exchange-pattern="request-response" address="${authorization.service.inbound.address}" />
+		
+			
 
 	<flow name="AuthorizationFlow">
-		<http:inbound-endpoint ref="authorizationInbound"/>
+		<http:inbound-endpoint ref="authorizationInbound">
+		</http:inbound-endpoint>
 		<jersey:resources>
 			<component class="com.rplp.icc.authorization.service.AuthServiceEndpoint" />
 		</jersey:resources>
 
+		
+		<logger message="#[payload]" level="INFO" />
+		
+		<flow-ref name="CallBronnoysundWS"/>
+		
+		<!-- The response needs to be transformed to our json format -->
+		<response>
+			<object-to-string-transformer/>
+			<custom-transformer class="com.rplp.icc.authorization.transformer.ResponseToDomainObject"/>	
+			<json:object-to-json-transformer 
+     							sourceClass="com.rplp.icc.authorization.domain.Person"/>
+		</response>
+		
+	</flow>
+	
+	
+	 <flow name="CallBronnoysundWS">
+		
 		<!-- Parameters for CXF client need to be an Object array -->
 		<custom-transformer class="org.mule.transformer.simple.StringToObjectArray" />
-
+		
 		<!-- TODO: Not the right service to call.... -->
 		<cxf:jaxws-client clientClass="no.brreg.saksys.grunndata.ws.FrivillighetService"
 			port="FrivillighetSoapPort" wsdlLocation="classpath:/wsdl/Frivillighet.wsdl"
 			operation="hentFrivillighet" />
 
 		<outbound-endpoint address="${authorization.service.brreg.address}" />
-
-	</flow>
+		
+		
+    </flow>
 
 </mule>
