@@ -44,7 +44,6 @@
 			<component class="com.rplp.icc.authorization.service.AuthServiceEndpoint" />
 		</jersey:resources>
 
-		<object-to-string-transformer />
 
 		<!-- Parameters for CXF client need to be an Object array -->
 		<custom-transformer class="org.mule.transformer.simple.StringToObjectArray" />
