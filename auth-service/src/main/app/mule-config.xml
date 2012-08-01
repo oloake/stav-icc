@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:spring="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns:https="http://www.mulesoft.org/schema/mule/https" xmlns:jetty="http://www.mulesoft.org/schema/mule/jetty"
+	xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:https="http://www.mulesoft.org/schema/mule/https"
+	xmlns:jetty="http://www.mulesoft.org/schema/mule/jetty"
 	xmlns:jetty-ssl="http://www.mulesoft.org/schema/mule/jetty-ssl"
 	xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
 	xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey" xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf"
@@ -32,30 +33,27 @@
 	</description>
 
 	<spring:beans>
-		<context:property-placeholder
-			location="classpath:authorization-app.properties" />
+		<context:property-placeholder location="classpath:authorization-app.properties" />
 	</spring:beans>
 
+	<http:endpoint name="authorizationInbound"
+		exchange-pattern="request-response" address="${authorization.service.inbound.address}" />
 
 	<flow name="AuthorizationFlow">
-		<http:inbound-endpoint address="${authorization.service.inbound.address}"
-			exchange-pattern="request-response" />
+		<http:inbound-endpoint ref="authorizationInbound"/>
 		<jersey:resources>
 			<component class="com.rplp.icc.authorization.service.AuthServiceEndpoint" />
 		</jersey:resources>
 
-
 		<!-- Parameters for CXF client need to be an Object array -->
 		<custom-transformer class="org.mule.transformer.simple.StringToObjectArray" />
 
-
-		<!-- TODO: Not the right service to call....  -->
+		<!-- TODO: Not the right service to call.... -->
 		<cxf:jaxws-client clientClass="no.brreg.saksys.grunndata.ws.FrivillighetService"
 			port="FrivillighetSoapPort" wsdlLocation="classpath:/wsdl/Frivillighet.wsdl"
 			operation="hentFrivillighet" />
-			
-		<outbound-endpoint
-			address="${authorization.service.brreg.address}" />
+
+		<outbound-endpoint address="${authorization.service.brreg.address}" />
 
 	</flow>
 
