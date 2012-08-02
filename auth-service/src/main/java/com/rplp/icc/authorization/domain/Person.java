@@ -5,6 +5,12 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 
+/**
+ * Represents a person that we can be a member of an {@link Organization}.
+ * 
+ * @author oloa
+ *
+ */
 @JsonAutoDetect
 public class Person {
 

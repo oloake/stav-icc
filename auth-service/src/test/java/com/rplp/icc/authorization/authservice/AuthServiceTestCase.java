@@ -61,10 +61,10 @@ public class AuthServiceTestCase extends FunctionalTestCase {
 	public static void startSoapUIMockService() throws Exception {
 
 		WsdlProject project = new WsdlProject(
-				"src/test/resources/soapui/Frivillighet-soapui-project.xml");
+				"src/test/resources/soapui/Rolle-soapui-project.xml");
 
 		project.getMockServiceByName(
-				"FrivillighetServiceSoapBinding MockService").start();
+				"RolleServiceSoapBinding MockService").start();
 
 	}
 

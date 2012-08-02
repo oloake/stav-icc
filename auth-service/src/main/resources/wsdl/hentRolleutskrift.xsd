@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 3 U (http://www.xmlspy.com) by Stein Ivar Olsen (Bronnoysundregistrene) -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema targetNamespace="http://no/brreg/saksys/grunndata/roller" xmlns="http://no/brreg/saksys/grunndata/roller" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:element name="grunndata">
 		<xs:annotation>
 			<xs:documentation>Bekskriver tjenesten hentRolleutskrift</xs:documentation>

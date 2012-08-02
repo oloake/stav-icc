@@ -8,6 +8,12 @@ import javax.ws.rs.Produces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * JAX-RS endpoint which receives the request. 
+ * 
+ * @author oloa
+ *
+ */
 @Path("/")
 public class AuthServiceEndpoint {
 
@@ -16,9 +22,9 @@ public class AuthServiceEndpoint {
 	@GET
 	@Produces("application/json")
 	@Path("/person/{pnr}")
-	public String greet(@PathParam("pnr") String input) {
+	public String greet(@PathParam("pnr") String pnr) {
 
-		return "1 2 3";
+		return pnr;
 	}
 
 }

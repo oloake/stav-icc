@@ -190,8 +190,8 @@
 							<sourceRoot>${project.build.directory}/generated/cxf</sourceRoot>
 							<wsdlOptions>
 								<wsdlOption>
-									<wsdl>${basedir}/src/main/resources/wsdl/Frivillighet.wsdl</wsdl>
-									<wsdlLocation>src/main/resources/wsdl/Frivillighet.wsdl</wsdlLocation>
+									<wsdl>${basedir}/src/main/resources/wsdl/Rolleutskrift.wsdl</wsdl>
+									<wsdlLocation>src/main/resources/wsdl/Rolleutskrift.wsdl</wsdlLocation>
 								</wsdlOption>
 							</wsdlOptions>
 						</configuration>

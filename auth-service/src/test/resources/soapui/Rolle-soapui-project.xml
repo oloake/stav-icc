@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project name="Rolle" resourceRoot="" soapui-version="4.0.1" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="RolleServiceSoapBinding" type="wsdl" bindingName="{http://no/brreg/saksys/grunndata/ws}RolleServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="file:/home/olof/work/stavanger/stav-icc/auth-service/src/main/resources/wsdl/Rolleutskrift.wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="file:/home/olof/work/stavanger/stav-icc/auth-service/src/main/resources/wsdl/Rolleutskrift.wsdl"><con:part><con:url>file:/home/olof/work/stavanger/stav-icc/auth-service/src/main/resources/wsdl/Rolleutskrift.wsdl</con:url><con:content><![CDATA[<WL5G3N0:definitions name="RolleServiceDefinitions" targetNamespace="http://no/brreg/saksys/grunndata/ws" xmlns:WL5G3N0="http://schemas.xmlsoap.org/wsdl/" xmlns:WL5G3N1="http://no/brreg/saksys/grunndata/ws" xmlns:rol="http://no/brreg/saksys/grunndata/roller" xmlns:WL5G3N2="http://schemas.xmlsoap.org/wsdl/soap/">
+  <WL5G3N0:types>
+    <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://no/brreg/saksys/grunndata/ws" xmlns:s0="http://schemas.xmlsoap.org/wsdl/" xmlns:s1="http://no/brreg/saksys/grunndata/ws" xmlns:s2="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="hentRolle">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="pnr" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="hentRolleResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="melding" minOccurs="0">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="rolleInnehaver">
+                    <xs:complexType>
+                      <xs:sequence>
+                        <xs:choice>
+                          <xs:element name="orgnr">
+                            <xs:complexType>
+                              <xs:simpleContent>
+                                <xs:extension base="xs:int">
+                                  <xs:attribute name="ledetekst" type="xs:string" use="optional"/>
+                                </xs:extension>
+                              </xs:simpleContent>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="fodselsnr">
+                            <xs:complexType>
+                              <xs:simpleContent>
+                                <xs:extension base="xs:string">
+                                  <xs:attribute name="ledetekst" type="xs:string" use="optional"/>
+                                </xs:extension>
+                              </xs:simpleContent>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="fodselsdato">
+                            <xs:complexType>
+                              <xs:simpleContent>
+                                <xs:extension base="xs:date">
+                                  <xs:attribute name="ledetekst" type="xs:string" use="optional"/>
+                                </xs:extension>
+                              </xs:simpleContent>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:choice>
+                        <xs:element name="navn" type="s1:navnType"/>
+                        <xs:element name="adresse" type="s1:adresseType1"/>
+                      </xs:sequence>
+                    </xs:complexType>
+                  </xs:element>
+                  <xs:element name="roller" minOccurs="0">
+                    <xs:complexType>
+                      <xs:sequence>
+                        <xs:element name="enhet" maxOccurs="unbounded">
+                          <xs:complexType>
+                            <xs:sequence>
+                              <xs:element name="rolleBeskrivelse">
+                                <xs:complexType>
+                                  <xs:simpleContent>
+                                    <xs:extension base="xs:string">
+                                      <xs:attribute name="ledetekst" type="xs:string" use="optional"/>
+                                    </xs:extension>
+                                  </xs:simpleContent>
+                                </xs:complexType>
+                              </xs:element>
+                              <xs:element name="orgnr">
+                                <xs:complexType>
+                                  <xs:simpleContent>
+                                    <xs:extension base="xs:int">
+                                      <xs:attribute name="ledetekst" type="xs:string" use="optional"/>
+                                    </xs:extension>
+                                  </xs:simpleContent>
+                                </xs:complexType>
+                              </xs:element>
+                              <xs:element name="navn" type="s1:navnType"/>
+                              <xs:element name="adresse">
+                                <xs:complexType>
+                                  <xs:sequence>
+                                    <xs:element name="forretningsAdresse" type="s1:adresseType2" minOccurs="0"/>
+                                    <xs:element name="postAdresse" type="s1:adresseType2" minOccurs="0"/>
+                                  </xs:sequence>
+                                </xs:complexType>
+                              </xs:element>
+                            </xs:sequence>
+                            <xs:attribute name="nr" type="xs:int" use="required"/>
+                            <xs:attribute name="registreringsDato" type="xs:date" use="required"/>
+                          </xs:complexType>
+                        </xs:element>
+                      </xs:sequence>
+                      <xs:attribute name="ledetekst" type="xs:string" use="required"/>
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>
+                <xs:attribute name="tjeneste" type="xs:string" use="required"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:complexType name="adresseType1">
+        <xs:sequence>
+          <xs:element name="adresse1" minOccurs="0">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+                <xs:maxLength value="35"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:element>
+          <xs:element name="adresse2" minOccurs="0">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+                <xs:maxLength value="35"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:element>
+          <xs:element name="adresse3" minOccurs="0">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+                <xs:maxLength value="35"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:element>
+          <xs:element name="postnr" minOccurs="0">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:minLength value="4"/>
+                <xs:maxLength value="9"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:element>
+          <xs:element name="poststed" minOccurs="0">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+                <xs:maxLength value="35"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:element>
+          <xs:element name="land">
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:string">
+                  <xs:attribute name="landkode1" type="xs:string" use="required"/>
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="ledetekst" type="xs:string" use="optional"/>
+      </xs:complexType>
+      <xs:complexType name="navnType">
+        <xs:sequence>
+          <xs:element name="navn1">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+                <xs:maxLength value="50"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:element>
+          <xs:element name="navn2" minOccurs="0">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+                <xs:maxLength value="50"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:element>
+          <xs:element name="navn3" minOccurs="0">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+                <xs:maxLength value="50"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:element>
+          <xs:element name="navn4" minOccurs="0">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+                <xs:maxLength value="35"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:element>
+          <xs:element name="navn5" minOccurs="0">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+                <xs:maxLength value="35"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="ledetekst" type="xs:string" use="optional"/>
+      </xs:complexType>
+      <xs:complexType name="adresseType2">
+        <xs:sequence>
+          <xs:element name="adresse1" minOccurs="0">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+                <xs:maxLength value="35"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:element>
+          <xs:element name="adresse2" minOccurs="0">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+                <xs:maxLength value="35"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:element>
+          <xs:element name="adresse3" minOccurs="0">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+                <xs:maxLength value="35"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:element>
+          <xs:element name="postnr" minOccurs="0">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:minLength value="4"/>
+                <xs:maxLength value="9"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:element>
+          <xs:element name="poststed" minOccurs="0">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:minLength value="1"/>
+                <xs:maxLength value="35"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:element>
+          <xs:element name="kommune" minOccurs="0">
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:string">
+                  <xs:attribute name="kommnr" type="xs:string" use="required"/>
+                  <xs:attribute name="ledetekst" type="xs:string" use="optional"/>
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="land">
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:string">
+                  <xs:attribute name="landkode1" type="xs:string" use="required"/>
+                  <xs:attribute name="ledetekst" type="xs:string" use="optional"/>
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="ledetekst" type="xs:string" use="optional"/>
+      </xs:complexType>
+    </xs:schema>
+  </WL5G3N0:types>
+  <WL5G3N0:message name="hentRolle">
+    <WL5G3N0:part element="WL5G3N1:hentRolle" name="parameters"/>
+  </WL5G3N0:message>
+  <WL5G3N0:message name="hentRolleResponse">
+    <WL5G3N0:part element="WL5G3N1:hentRolleResponse" name="parameters"/>
+  </WL5G3N0:message>
+  <WL5G3N0:portType name="Rolle">
+    <WL5G3N0:operation name="hentRolle">
+      <WL5G3N0:input message="WL5G3N1:hentRolle"/>
+      <WL5G3N0:output message="WL5G3N1:hentRolleResponse"/>
+    </WL5G3N0:operation>
+  </WL5G3N0:portType>
+  <WL5G3N0:binding name="RolleServiceSoapBinding" type="WL5G3N1:Rolle">
+    <WL5G3N2:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <WL5G3N0:operation name="hentRolle">
+      <WL5G3N2:operation style="document"/>
+      <WL5G3N0:input>
+        <WL5G3N2:body parts="parameters" use="literal"/>
+      </WL5G3N0:input>
+      <WL5G3N0:output>
+        <WL5G3N2:body parts="parameters" use="literal"/>
+      </WL5G3N0:output>
+    </WL5G3N0:operation>
+  </WL5G3N0:binding>
+  <WL5G3N0:service name="RolleService">
+    <WL5G3N0:port binding="WL5G3N1:RolleServiceSoapBinding" name="RolleSoapPort">
+      <WL5G3N2:address location="http://localhost:9595/rolle"/>
+    </WL5G3N0:port>
+  </WL5G3N0:service>
+</WL5G3N0:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:9595/rolle</con:endpoint><con:endpoint>http://mingus:8088/mockRolleServiceSoapBinding</con:endpoint></con:endpoints><con:operation isOneWay="false" action="" name="hentRolle" bindingOperationName="hentRolle" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://mingus:8088/mockRolleServiceSoapBinding</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://no/brreg/saksys/grunndata/ws">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ws:hentRolle>
+         <ws:pnr>123</ws:pnr>
+      </ws:hentRolle>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://no/brreg/saksys/grunndata/ws/Rolle/hentRolleRequest"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:mockService port="8088" path="/mockRolleServiceSoapBinding" host="mingus" name="RolleServiceSoapBinding MockService"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.mock.WsdlMockService@require-soap-action">false</con:setting></con:settings><con:mockOperation name="hentRolle" interface="RolleServiceSoapBinding" operation="hentRolle"><con:settings/><con:dispatchStyle>SEQUENCE</con:dispatchStyle><con:defaultResponse>MockResponse 1</con:defaultResponse><con:response name="MockResponse 1" encoding="UTF-8"><con:settings/><con:responseContent><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://no/brreg/saksys/grunndata/ws">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ws:hentRolleResponse>
+         <ws:melding tjeneste="?">
+            <ws:rolleInnehaver>
+               <ws:fodselsnr ledetekst="?">19121212121</ws:fodselsnr>
+               <ws:navn ledetekst="?">
+                  <ws:navn1>?</ws:navn1>
+                  <!--Optional:-->
+                  <ws:navn2>?</ws:navn2>
+                  <!--Optional:-->
+                  <ws:navn3>?</ws:navn3>
+                  <!--Optional:-->
+                  <ws:navn4>?</ws:navn4>
+                  <!--Optional:-->
+                  <ws:navn5>?</ws:navn5>
+               </ws:navn>
+               <ws:adresse ledetekst="?">
+                  <!--Optional:-->
+                  <ws:adresse1>?</ws:adresse1>
+                  <!--Optional:-->
+                  <ws:adresse2>?</ws:adresse2>
+                  <!--Optional:-->
+                  <ws:adresse3>?</ws:adresse3>
+                  <!--Optional:-->
+                  <ws:postnr>1234</ws:postnr>
+                  <ws:poststed>?</ws:poststed>
+                  <ws:land landkode1="?">?</ws:land>
+               </ws:adresse>
+            </ws:rolleInnehaver>
+            <!--Optional:-->
+            <ws:roller ledetekst="?">
+               <!--1 or more repetitions:-->
+               <ws:enhet nr="123" registreringsDato="2012-01-01">
+                  <ws:rolleBeskrivelse ledetekst="?">?</ws:rolleBeskrivelse>
+                  <ws:orgnr ledetekst="?">1234</ws:orgnr>
+                  <ws:navn ledetekst="?">
+                     <ws:navn1>?</ws:navn1>
+                     <!--Optional:-->
+                     <ws:navn2>?</ws:navn2>
+                     <!--Optional:-->
+                     <ws:navn3>?</ws:navn3>
+                     <!--Optional:-->
+                     <ws:navn4>?</ws:navn4>
+                     <!--Optional:-->
+                     <ws:navn5>?</ws:navn5>
+                  </ws:navn>
+                  <ws:adresse>
+                     <!--Optional:-->
+                     <ws:forretningsAdresse ledetekst="?">
+                        <!--Optional:-->
+                        <ws:adresse1>?</ws:adresse1>
+                        <!--Optional:-->
+                        <ws:adresse2>?</ws:adresse2>
+                        <!--Optional:-->
+                        <ws:adresse3>?</ws:adresse3>
+                        <!--Optional:-->
+                        <ws:postnr>1234</ws:postnr>
+                        <!--Optional:-->
+                        <ws:poststed>?</ws:poststed>
+                        <!--Optional:-->
+                        <ws:kommune kommnr="?" ledetekst="?">?</ws:kommune>
+                        <ws:land landkode1="?" ledetekst="?">?</ws:land>
+                     </ws:forretningsAdresse>
+                     <!--Optional:-->
+                     <ws:postAdresse ledetekst="?">
+                        <!--Optional:-->
+                        <ws:adresse1>?</ws:adresse1>
+                        <!--Optional:-->
+                        <ws:adresse2>?</ws:adresse2>
+                        <!--Optional:-->
+                        <ws:adresse3>?</ws:adresse3>
+                        <!--Optional:-->
+                        <ws:postnr>1234</ws:postnr>
+                        <!--Optional:-->
+                        <ws:poststed>?</ws:poststed>
+                        <!--Optional:-->
+                        <ws:kommune kommnr="?" ledetekst="?">?</ws:kommune>
+                        <ws:land landkode1="?" ledetekst="?">?</ws:land>
+                     </ws:postAdresse>
+                  </ws:adresse>
+               </ws:enhet>
+            </ws:roller>
+         </ws:melding>
+      </ws:hentRolleResponse>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:responseContent><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://no/brreg/saksys/grunndata/ws/Rolle/hentRolleResponse"/></con:response><con:dispatchConfig/></con:mockOperation><con:properties/></con:mockService><con:properties/><con:wssContainer/></con:soapui-project>

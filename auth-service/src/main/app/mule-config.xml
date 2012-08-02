@@ -40,44 +40,36 @@
 
 	<http:endpoint name="authorizationInbound"
 		exchange-pattern="request-response" address="${authorization.service.inbound.address}" />
-		
 			
 
 	<flow name="AuthorizationFlow">
-		<http:inbound-endpoint ref="authorizationInbound">
-		</http:inbound-endpoint>
+		<http:inbound-endpoint ref="authorizationInbound"/>
 		<jersey:resources>
 			<component class="com.rplp.icc.authorization.service.AuthServiceEndpoint" />
 		</jersey:resources>
-
-		
-		<logger message="#[payload]" level="INFO" />
 		
 		<flow-ref name="CallBronnoysundWS"/>
 		
 		<!-- The response needs to be transformed to our json format -->
 		<response>
-			<object-to-string-transformer/>
-			<custom-transformer class="com.rplp.icc.authorization.transformer.ResponseToDomainObject"/>	
-			<json:object-to-json-transformer 
-     							sourceClass="com.rplp.icc.authorization.domain.Person"/>
+			<custom-transformer class="com.rplp.icc.authorization.transformer.MeldingToPerson"/>	
+			<json:object-to-json-transformer/> 
 		</response>
-		
+	
 	</flow>
 	
 	
 	 <flow name="CallBronnoysundWS">
 		
 		<!-- Parameters for CXF client need to be an Object array -->
-		<custom-transformer class="org.mule.transformer.simple.StringToObjectArray" />
+		<custom-transformer class="org.mule.transformer.simple.StringToObjectArray" /> 
 		
 		<!-- TODO: Not the right service to call.... -->
-		<cxf:jaxws-client clientClass="no.brreg.saksys.grunndata.ws.FrivillighetService"
-			port="FrivillighetSoapPort" wsdlLocation="classpath:/wsdl/Frivillighet.wsdl"
-			operation="hentFrivillighet" />
+		<cxf:jaxws-client clientClass="no.brreg.saksys.grunndata.ws.RolleService"
+			port="RolleSoapPort" wsdlLocation="classpath:/wsdl/Rolleutskrift.wsdl"
+			operation="hentRolle" />
 
 		<outbound-endpoint address="${authorization.service.brreg.address}" />
-		
 		
     </flow>
 
