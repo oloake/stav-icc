@@ -12,6 +12,7 @@
 	xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
 	xmlns:mule-xml="http://www.mulesoft.org/schema/mule/xml"
 	xmlns:json="http://www.mulesoft.org/schema/mule/json"
+	xmlns:mule-ss="http://www.mulesoft.org/schema/mule/spring-security"
 	xsi:schemaLocation="
         http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/3.3/mule.xsd
         http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/3.3/mule-http.xsd
@@ -19,7 +20,6 @@
         http://www.mulesoft.org/schema/mule/jetty http://www.mulesoft.org/schema/mule/jetty/3.3/mule-jetty.xsd
         http://www.mulesoft.org/schema/mule/jetty-ssl http://www.mulesoft.org/schema/mule/jetty-ssl/3.3/mule-jetty-ssl.xsd
         http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/3.3/mule-file.xsd
-        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/3.3/mule-vm.xsd
         http://www.mulesoft.org/schema/mule/jersey http://www.mulesoft.org/schema/mule/jersey/3.3/mule-jersey.xsd
         http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/3.3/mule-cxf.xsd
         http://www.mulesoft.org/schema/mule/client http://www.mulesoft.org/schema/mule/client/3.3/mule-client.xsd
@@ -27,8 +27,10 @@
         http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/3.3/mule-scripting.xsd
         http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/3.3/mule-xml.xsd
         http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/3.3/mule-json.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/3.3/mule-vm.xsd
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+        http://www.mulesoft.org/schema/mule/spring-security http://www.mulesoft.org/schema/mule/spring-security/3.3/mule-spring-security.xsd">
 
 	<description>
 		Authorization service
@@ -36,30 +38,45 @@
 
 	<spring:beans>
 		<context:property-placeholder location="classpath:authorization-app.properties" />
+		<spring:import resource="mule-security-config.xml" />
 	</spring:beans>
 
 	<http:endpoint name="authorizationInbound"
 		exchange-pattern="request-response" address="${authorization.service.inbound.address}" />
-			
-
+		
+		
 	<flow name="AuthorizationFlow">
-		<http:inbound-endpoint ref="authorizationInbound"/>
-		<jersey:resources>
+		<http:inbound-endpoint  ref="authorizationInbound">
+			<mule-ss:http-security-filter realm="mule-realm"/>
+ 		</http:inbound-endpoint>
+ 		<jersey:resources>
 			<component class="com.rplp.icc.authorization.service.AuthServiceEndpoint" />
 		</jersey:resources>
+
+		<!-- 
+			Remove security context to avoid serialization error. See class comment for further
+			details...
+		 -->		
+		<component>
+			<singleton-object class="com.rplp.icc.authorization.transformer.SecurityContextRemover"/>
+		</component>
 		
 		<flow-ref name="CallBronnoysundWS"/>
-		
-		<!-- The response needs to be transformed to our json format -->
+
+		<!-- The response needs to be transformed to our json format  -->
 		<response>
 			<custom-transformer class="com.rplp.icc.authorization.transformer.MeldingToPerson"/>	
 			<json:object-to-json-transformer/> 
-		</response>
+		</response> 
 	
 	</flow>
 	
 	
+	
 	 <flow name="CallBronnoysundWS">
+
+		
+		<object-to-string-transformer/>
 		
 		<!-- Parameters for CXF client need to be an Object array -->
 		<custom-transformer class="org.mule.transformer.simple.StringToObjectArray" /> 

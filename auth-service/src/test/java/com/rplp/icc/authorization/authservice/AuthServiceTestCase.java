@@ -17,12 +17,13 @@ import org.junit.Test;
 import org.mule.tck.junit4.FunctionalTestCase;
 
 import com.eviware.soapui.impl.wsdl.WsdlProject;
+import com.meterware.httpunit.AuthorizationRequiredException;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-public class AuthServiceTestCase extends FunctionalTestCase {
+public class AuthServiceTestCase  extends FunctionalTestCase {
 
 	private static Properties properties;
 
@@ -30,6 +31,8 @@ public class AuthServiceTestCase extends FunctionalTestCase {
 	protected String getConfigResources() {
 		return "src/main/app/mule-config.xml";
 	}
+	
+	
 
 	@BeforeClass
 	public static void initialize() throws Exception {
@@ -43,13 +46,16 @@ public class AuthServiceTestCase extends FunctionalTestCase {
 
 	//TODO: test something more useful...
 	@Test
-	public void testOkResponse() throws Exception {
+	public void testAuthenticated() throws Exception {
 
 		WebConversation wc = new WebConversation();
 
 		WebRequest request = new GetMethodWebRequest(properties.getProperty("authorization.service.inbound.address") + "/person/123");
-		
+
+		wc.setAuthentication("mule-realm", "testclient", "test");
+	
 		WebResponse response = wc.getResponse(request);
+		
 
 		System.out.println(response.getText());
 		System.out.println(response.getResponseMessage());
@@ -57,6 +63,23 @@ public class AuthServiceTestCase extends FunctionalTestCase {
 		assertEquals(200, response.getResponseCode());
 		
 	}
+	
+	@Test(expected = AuthorizationRequiredException.class)
+	public void testUnauthenticated() throws Exception {
+
+		WebConversation wc = new WebConversation();
+
+		WebRequest request = new GetMethodWebRequest(properties.getProperty("authorization.service.inbound.address") + "/person/123");
+		
+		
+
+		wc.setAuthentication("mule-realm", "testclient", "wrongpassword");
+	
+		wc.getResponse(request);
+		
+		
+	}
+
 
 	public static void startSoapUIMockService() throws Exception {
 
