@@ -35,24 +35,26 @@
 	<description>
 		Authorization service
 	</description>
+	
+	<https:connector name="httpsConnector">
+		<https:tls-key-store path="${conf.dir}/keystore.jks" type="jks" keyPassword="test123" storePassword="test123"/>
+		<https:tls-server path="${conf.dir}/truststore.jks" type="jks" storePassword="test123"/>
+	</https:connector>
 
 	<spring:beans>
 		<context:property-placeholder location="classpath:authorization-app.properties" />
 		<spring:import resource="mule-security-config.xml" />
 	</spring:beans>
 
-	<http:endpoint name="authorizationInbound"
-		exchange-pattern="request-response" address="${authorization.service.inbound.address}" />
 		
 		
 	<flow name="AuthorizationFlow">
-		<http:inbound-endpoint  ref="authorizationInbound">
+		<https:inbound-endpoint  address="${authorization.service.inbound.address}" connector-ref="httpsConnector" >
 			<mule-ss:http-security-filter realm="mule-realm"/>
- 		</http:inbound-endpoint>
+ 		</https:inbound-endpoint>
  		<jersey:resources>
 			<component class="com.rplp.icc.authorization.service.AuthServiceEndpoint" />
 		</jersey:resources>
-
 		<!-- 
 			Remove security context to avoid serialization error. See class comment for further
 			details...
@@ -62,7 +64,7 @@
 		</component>
 		
 		<flow-ref name="CallBronnoysundWS"/>
-
+		
 		<!-- The response needs to be transformed to our json format  -->
 		<response>
 			<custom-transformer class="com.rplp.icc.authorization.transformer.MeldingToPerson"/>	
@@ -71,22 +73,15 @@
 	
 	</flow>
 	
-	
-	
 	 <flow name="CallBronnoysundWS">
-
-		
 		<object-to-string-transformer/>
-		
 		<!-- Parameters for CXF client need to be an Object array -->
 		<custom-transformer class="org.mule.transformer.simple.StringToObjectArray" /> 
-		
 		<!-- TODO: Not the right service to call.... -->
 		<cxf:jaxws-client clientClass="no.brreg.saksys.grunndata.ws.RolleService"
 			port="RolleSoapPort" wsdlLocation="classpath:/wsdl/Rolleutskrift.wsdl"
 			operation="hentRolle" />
-
-		<outbound-endpoint address="${authorization.service.brreg.address}" />
+		<http:outbound-endpoint address="${authorization.service.brreg.address}" />
 		
     </flow>
 

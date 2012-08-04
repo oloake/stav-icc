@@ -10,7 +10,12 @@ package com.rplp.icc.authorization.authservice;
 import static org.junit.Assert.assertEquals;
 
 import java.io.FileInputStream;
+import java.security.cert.X509Certificate;
 import java.util.Properties;
+
+
+import com.sun.net.ssl.internal.*;
+
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -36,13 +41,22 @@ public class AuthServiceTestCase  extends FunctionalTestCase {
 
 	@BeforeClass
 	public static void initialize() throws Exception {
+		
+		//Mule needs to know where the configuration should be loaded from.
+		System.setProperty("conf.dir", "conf");
+		
 
 		properties = new Properties();
 		properties.load(new FileInputStream(
 				"src/main/resources/authorization-app.properties"));
-
+		
+		turnOffCertificateVerification();
+		
 		startSoapUIMockService();
 	}
+
+
+
 
 	//TODO: test something more useful...
 	@Test
@@ -52,6 +66,7 @@ public class AuthServiceTestCase  extends FunctionalTestCase {
 
 		WebRequest request = new GetMethodWebRequest(properties.getProperty("authorization.service.inbound.address") + "/person/123");
 
+		
 		wc.setAuthentication("mule-realm", "testclient", "test");
 	
 		WebResponse response = wc.getResponse(request);
@@ -68,6 +83,7 @@ public class AuthServiceTestCase  extends FunctionalTestCase {
 	public void testUnauthenticated() throws Exception {
 
 		WebConversation wc = new WebConversation();
+		
 
 		WebRequest request = new GetMethodWebRequest(properties.getProperty("authorization.service.inbound.address") + "/person/123");
 		
@@ -81,7 +97,7 @@ public class AuthServiceTestCase  extends FunctionalTestCase {
 	}
 
 
-	public static void startSoapUIMockService() throws Exception {
+	private static void startSoapUIMockService() throws Exception {
 
 		WsdlProject project = new WsdlProject(
 				"src/test/resources/soapui/Rolle-soapui-project.xml");
@@ -89,6 +105,46 @@ public class AuthServiceTestCase  extends FunctionalTestCase {
 		project.getMockServiceByName(
 				"RolleServiceSoapBinding MockService").start();
 
+	}
+
+	private static void turnOffCertificateVerification() {
+		
+		//Don't verify host names
+		com.sun.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(new com.sun.net.ssl.HostnameVerifier() {
+			@Override
+			public boolean verify(String arg0, String arg1) {
+				// TODO Auto-generated method stub
+				return true;
+			}
+		});
+		
+		// Create a trust manager that does not validate certificate chains
+		com.sun.net.ssl.TrustManager[] trustAllCerts = new com.sun.net.ssl.TrustManager[]{
+		    new com.sun.net.ssl.X509TrustManager() {
+		        @Override
+		        public X509Certificate[] getAcceptedIssuers() {
+		        	return null;
+		        }
+		        @Override
+		        public boolean isClientTrusted(X509Certificate[] arg0) {
+		        	return true;
+		        }
+		        
+		        public boolean isServerTrusted(X509Certificate[] arg0) {
+					return true;
+		        };
+		        
+		}};
+		
+		// Install the all-trusting trust manager
+		try {
+		    com.sun.net.ssl.SSLContext sc = com.sun.net.ssl.SSLContext.getInstance("SSL");
+		    sc.init(null, trustAllCerts, new java.security.SecureRandom());
+		    com.sun.net.ssl.HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 }
