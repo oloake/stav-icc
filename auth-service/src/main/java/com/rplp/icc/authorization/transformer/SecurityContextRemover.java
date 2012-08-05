@@ -3,6 +3,7 @@ package com.rplp.icc.authorization.transformer;
 import java.io.NotSerializableException;
 
 import org.mule.api.MuleEventContext;
+import org.mule.api.MuleMessage;
 import org.mule.api.MuleSession;
 import org.mule.api.lifecycle.Callable;
 import org.mule.api.security.SecurityContext;
@@ -32,9 +33,12 @@ public class SecurityContextRemover implements Callable {
 	@Override
 	public Object onCall(MuleEventContext eventContext) throws Exception {
 		
+		
+		
 		MuleSession session = eventContext.getSession();
 		
 		session.setSecurityContext(null);
+		
 		
 		return eventContext.getMessage();
 	}

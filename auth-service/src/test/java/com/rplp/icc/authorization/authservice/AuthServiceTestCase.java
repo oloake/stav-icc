@@ -14,9 +14,10 @@ import java.security.cert.X509Certificate;
 import java.util.Properties;
 
 
-import com.sun.net.ssl.internal.*;
 
-
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mule.tck.junit4.FunctionalTestCase;
@@ -24,9 +25,11 @@ import org.mule.tck.junit4.FunctionalTestCase;
 import com.eviware.soapui.impl.wsdl.WsdlProject;
 import com.meterware.httpunit.AuthorizationRequiredException;
 import com.meterware.httpunit.GetMethodWebRequest;
+import com.meterware.httpunit.HttpException;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
+import com.rplp.icc.authorization.domain.Person;
 
 public class AuthServiceTestCase  extends FunctionalTestCase {
 
@@ -48,7 +51,7 @@ public class AuthServiceTestCase  extends FunctionalTestCase {
 
 		properties = new Properties();
 		properties.load(new FileInputStream(
-				"src/main/resources/authorization-app.properties"));
+				"conf/authorization-app.properties"));
 		
 		turnOffCertificateVerification();
 		
@@ -56,26 +59,26 @@ public class AuthServiceTestCase  extends FunctionalTestCase {
 	}
 
 
-
-
-	//TODO: test something more useful...
 	@Test
 	public void testAuthenticated() throws Exception {
 
 		WebConversation wc = new WebConversation();
 
 		WebRequest request = new GetMethodWebRequest(properties.getProperty("authorization.service.inbound.address") + "/person/123");
-
 		
 		wc.setAuthentication("mule-realm", "testclient", "test");
 	
 		WebResponse response = wc.getResponse(request);
-		
 
 		System.out.println(response.getText());
 		System.out.println(response.getResponseMessage());
 		
+		
 		assertEquals(200, response.getResponseCode());
+		
+		ObjectMapper mapper = new ObjectMapper();
+		Person person = mapper.readValue(response.getText(), Person.class);
+		Assert.assertEquals(1, person.getOrganizations().size());
 		
 	}
 	
@@ -92,6 +95,28 @@ public class AuthServiceTestCase  extends FunctionalTestCase {
 		wc.setAuthentication("mule-realm", "testclient", "wrongpassword");
 	
 		wc.getResponse(request);
+		
+		
+	}
+	
+	@Test
+	public void testUnauthorized() throws Exception {
+
+		WebConversation wc = new WebConversation();
+		
+
+		WebRequest request = new GetMethodWebRequest(properties.getProperty("authorization.service.inbound.address") + "/person/123");
+		
+		
+
+		wc.setAuthentication("mule-realm", "testclient2", "test");
+	
+		try {
+			wc.getResponse(request);
+			Assert.fail("should throw exception");
+		} catch (HttpException e) {
+			Assert.assertEquals(403, e.getResponseCode());
+		}
 		
 		
 	}

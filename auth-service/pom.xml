@@ -358,13 +358,13 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-		    <groupId>org.mule.modules</groupId>
-		    <artifactId>mule-module-json</artifactId>
-		    <version>${mule.version}</version>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-module-json</artifactId>
+			<version>${mule.version}</version>
 			<scope>provided</scope>
-		 </dependency>
-		
-		
+		</dependency>
+
+
 		<!-- for testing -->
 		<dependency>
 			<groupId>org.mule.tests</groupId>
@@ -406,6 +406,7 @@
 			<layout>default</layout>
 		</repository>
 
+		
 		<repository>
 			<id>codehaus-repo</id>
 			<name>Codehaus Repository</name>

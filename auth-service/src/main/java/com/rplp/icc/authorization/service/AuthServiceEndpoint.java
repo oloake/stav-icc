@@ -19,10 +19,11 @@ public class AuthServiceEndpoint {
 
 
 	Logger LOG = LoggerFactory.getLogger(AuthServiceEndpoint.class);
+	
 	@GET
 	@Produces("application/json")
 	@Path("/person/{pnr}")
-	public String greet(@PathParam("pnr") String pnr) {
+	public String getPerson(@PathParam("pnr") String pnr) {
 
 		return pnr;
 	}

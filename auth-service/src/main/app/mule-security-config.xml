@@ -12,6 +12,10 @@
        http://www.springframework.org/schema/security 
 	   http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
+	<!-- 
+		The Spring Security configuration for securing the service. It might be possible to simplify this a bit...
+	 -->
+
 	<mule-ss:security-manager>
 		<mule-ss:delegate-security-provider
 			name="memory-provider" delegate-ref="authenticationManager" />
@@ -20,8 +24,51 @@
 	<spring:beans>
 		<ss:authentication-manager alias="authenticationManager">
 			<ss:authentication-provider>
-				<ss:user-service id="userService" properties="classpath:authorization-app-security.properties"/>
+				<!-- 
+					The user service just uses a property file but here we can plugin in a JDBC or LDAP store
+					quite easily.
+				 -->
+				<ss:user-service id="userService"
+					properties="file:${conf.dir}/authorization-app-security.properties" />
+					
 			</ss:authentication-provider>
 		</ss:authentication-manager>
+
+		<spring:bean
+			class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator"
+			id="autoProxyCreator">
+			<spring:property name="interceptorNames">
+				<spring:list>
+					<spring:value>methodSecurityInterceptor</spring:value>
+				</spring:list>
+			</spring:property>
+			<spring:property name="beanNames">
+				<spring:list>
+					<spring:value>authServiceEndpoint</spring:value>
+				</spring:list>
+			</spring:property>
+			<spring:property name="proxyTargetClass" value="true" />
+		</spring:bean>
+
+		<spring:bean
+			class="org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor"
+			id="methodSecurityInterceptor">
+			<spring:property name="authenticationManager" ref="authenticationManager" />
+			<spring:property name="accessDecisionManager" ref="accessDecisionManager" />
+			<spring:property name="securityMetadataSource"
+				value="com.rplp.icc.authorization.service.AuthServiceEndpoint.getPerson=ROLE_WS_CLIENT">
+			</spring:property>
+		</spring:bean>
+
+		<spring:bean
+			class="org.springframework.security.access.vote.AffirmativeBased" id="accessDecisionManager">
+			<spring:property name="decisionVoters">
+				<spring:list>
+					<spring:ref bean="roleVoter" />
+				</spring:list>
+			</spring:property>
+		</spring:bean>
+		<spring:bean class="org.springframework.security.access.vote.RoleVoter"
+			id="roleVoter" />
 	</spring:beans>
 </mule>
