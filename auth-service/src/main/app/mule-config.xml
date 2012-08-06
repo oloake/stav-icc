@@ -43,10 +43,10 @@
 	</spring:beans>
 
 	<https:connector name="httpsConnector">
-		<https:tls-key-store path="${conf.dir}/keystore.jks"
+		<https:tls-key-store path="${MULE_HOME}/conf/keystore.jks"
 			type="jks" keyPassword="${authorization.service.keystore.password}"
 			storePassword="${authorization.service.keystore.password}" />
-		<https:tls-server path="${conf.dir}/truststore.jks"
+		<https:tls-server path="${MULE_HOME}/conf/truststore.jks"
 			type="jks" storePassword="${authorization.service.truststore.password}" />
 	</https:connector>
 

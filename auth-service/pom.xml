@@ -170,6 +170,14 @@
 						</goals>
 						<configuration>
 							<tasks>
+								<echo message="Copying configuration..." />
+								<copy todir="${env.MULE_HOME}/conf" overwrite="true">
+								  <fileset dir="${basedir}/conf">
+								    <include name="**/*.properties"/>
+								    <exclude name="**/log4j.properties"/>
+								  </fileset>
+								</copy>
+								<echo message="Installing application..."/>
 								<copy
 									file="${project.build.directory}/${project.build.finalName}.zip"
 									todir="${env.MULE_HOME}/apps" overwrite="true" />
