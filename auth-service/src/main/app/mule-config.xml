@@ -50,13 +50,23 @@
 			type="jks" storePassword="${authorization.service.truststore.password}" />
 	</https:connector>
 
+<!-- 	<interceptor-stack name="commonInterceptors">
+		<custom-interceptor class="com.rplp.icc.authorization.interceptor.MDCLoggingInterceptor"/>
+		<timer-interceptor/>
+	</interceptor-stack> -->
 
 
-	<flow name="AuthorizationFlow" >
+	<flow name="AuthorizationService" >
 		<https:inbound-endpoint exchange-pattern="request-response" address="${authorization.service.inbound.address}"
 			connector-ref="httpsConnector">
 			<mule-ss:http-security-filter realm="mule-realm" />
 		</https:inbound-endpoint>
+		
+		<custom-interceptor class="com.rplp.icc.authorization.interceptor.MDCLoggingInterceptor"/>
+		<timer-interceptor/>
+		
+		<logger level="INFO" message="Request received from client: #[header:INBOUND:MULE_REMOTE_CLIENT_ADDRESS]"/>
+		
 		<jersey:resources>
 			<component>
 				<spring-object bean="authServiceEndpoint" />
@@ -90,7 +100,10 @@
 	</flow>
 
 	<flow name="CallBronnoysundWS">
-
+		
+		<custom-interceptor class="com.rplp.icc.authorization.interceptor.MDCLoggingInterceptor"/>
+		<timer-interceptor/>
+		
 		<object-to-string-transformer />
 		<!-- Parameters for CXF client need to be an Object array -->
 		<custom-transformer class="org.mule.transformer.simple.StringToObjectArray" />
@@ -99,6 +112,7 @@
 			<cxf:jaxws-client clientClass="no.brreg.saksys.grunndata.ws.RolleService"
 				port="RolleSoapPort" wsdlLocation="classpath:/wsdl/Rolleutskrift.wsdl"
 				operation="hentRolle" />
+					
 		</http:outbound-endpoint>
 
 		<!-- The response needs to be transformed to our json format -->
@@ -107,6 +121,7 @@
 				class="com.rplp.icc.authorization.transformer.MeldingToPerson" />
 			<json:object-to-json-transformer />
 		</response>
+		
 	</flow>
 
 </mule>
