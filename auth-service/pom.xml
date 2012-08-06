@@ -401,12 +401,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>eviware</groupId>
-			<artifactId>maven-soapui-plugin</artifactId>
-			<version>4.0.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>httpunit</groupId>
 			<artifactId>httpunit</artifactId>
 			<version>1.7</version>

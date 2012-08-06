@@ -13,16 +13,12 @@ import java.io.FileInputStream;
 import java.security.cert.X509Certificate;
 import java.util.Properties;
 
-
-
-import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mule.tck.junit4.FunctionalTestCase;
 
-import com.eviware.soapui.impl.wsdl.WsdlProject;
 import com.meterware.httpunit.AuthorizationRequiredException;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.HttpException;
@@ -35,16 +31,19 @@ public class AuthServiceTestCase  extends FunctionalTestCase {
 
 	private static Properties properties;
 
+	
+	
+	
 	@Override
 	protected String getConfigResources() {
-		return "src/main/app/mule-config.xml";
+		return "src/main/app/mule-config.xml src/test/resources/mule-test-config.xml";
 	}
+	
 	
 	
 
 	@BeforeClass
 	public static void initialize() throws Exception {
-		
 		//Mule needs to know where the configuration should be loaded from.
 		System.setProperty("conf.dir", "conf");
 		
@@ -55,7 +54,6 @@ public class AuthServiceTestCase  extends FunctionalTestCase {
 		
 		turnOffCertificateVerification();
 		
-		startSoapUIMockService();
 	}
 
 
@@ -121,16 +119,6 @@ public class AuthServiceTestCase  extends FunctionalTestCase {
 		
 	}
 
-
-	private static void startSoapUIMockService() throws Exception {
-
-		WsdlProject project = new WsdlProject(
-				"src/test/resources/soapui/Rolle-soapui-project.xml");
-
-		project.getMockServiceByName(
-				"RolleServiceSoapBinding MockService").start();
-
-	}
 
 	private static void turnOffCertificateVerification() {
 		

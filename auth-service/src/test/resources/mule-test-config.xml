@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:test="http://www.mulesoft.org/schema/mule/test"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:https="http://www.mulesoft.org/schema/mule/https"
+      xmlns:jetty="http://www.mulesoft.org/schema/mule/jetty"
+      xmlns:jetty-ssl="http://www.mulesoft.org/schema/mule/jetty-ssl"
+      xmlns:file="http://www.mulesoft.org/schema/mule/file"
+      xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+      xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey"
+      xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf"
+      xmlns:client="http://www.mulesoft.org/schema/mule/client"
+      xmlns:management="http://www.mulesoft.org/schema/mule/management"
+      xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+      xmlns:mule-xml="http://www.mulesoft.org/schema/mule/xml"
+    xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/3.3/mule.xsd
+        http://www.mulesoft.org/schema/mule/test http://www.mulesoft.org/schema/mule/test/3.3/mule-test.xsd
+        http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/3.3/mule-http.xsd
+        http://www.mulesoft.org/schema/mule/https http://www.mulesoft.org/schema/mule/https/3.3/mule-https.xsd
+        http://www.mulesoft.org/schema/mule/jetty http://www.mulesoft.org/schema/mule/jetty/3.3/mule-jetty.xsd
+        http://www.mulesoft.org/schema/mule/jetty-ssl http://www.mulesoft.org/schema/mule/jetty-ssl/3.3/mule-jetty-ssl.xsd
+        http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/3.3/mule-file.xsd
+        http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/3.3/mule-vm.xsd
+        http://www.mulesoft.org/schema/mule/jersey http://www.mulesoft.org/schema/mule/jersey/3.3/mule-jersey.xsd
+        http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/3.3/mule-cxf.xsd
+        http://www.mulesoft.org/schema/mule/client http://www.mulesoft.org/schema/mule/client/3.3/mule-client.xsd
+        http://www.mulesoft.org/schema/mule/management http://www.mulesoft.org/schema/mule/management/3.3/mule-management.xsd
+        http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/3.3/mule-scripting.xsd
+        http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/3.3/mule-xml.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+
+
+	<https:connector name="testHttpsConnector">
+		<https:tls-key-store path="src/test/resources/test-keystore.jks"
+			type="jks" keyPassword="${authorization.service.keystore.password}"
+			storePassword="${authorization.service.keystore.password}" />
+		<https:tls-server path="src/test/resources/test-truststore.jks"
+			type="jks" storePassword="${authorization.service.truststore.password}" />
+	</https:connector>
+    
+    <flow name="MockBronnoysundWS">
+    	<https:inbound-endpoint address="${authorization.service.brreg.address}" 
+    		exchange-pattern="request-response" connector-ref="testHttpsConnector">
+        	<cxf:jaxws-service serviceClass="no.brreg.saksys.grunndata.ws.Rolle" />
+    	</https:inbound-endpoint>
+    	<component class="com.rplp.icc.authorization.brreg.MockRolleWS" /> 
+    </flow>
+    
+</mule>

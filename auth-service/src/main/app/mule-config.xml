@@ -50,11 +50,6 @@
 			type="jks" storePassword="${authorization.service.truststore.password}" />
 	</https:connector>
 
-<!-- 	<interceptor-stack name="commonInterceptors">
-		<custom-interceptor class="com.rplp.icc.authorization.interceptor.MDCLoggingInterceptor"/>
-		<timer-interceptor/>
-	</interceptor-stack> -->
-
 
 	<flow name="AuthorizationService" >
 		<https:inbound-endpoint exchange-pattern="request-response" address="${authorization.service.inbound.address}"
@@ -108,12 +103,13 @@
 		<!-- Parameters for CXF client need to be an Object array -->
 		<custom-transformer class="org.mule.transformer.simple.StringToObjectArray" />
 
-		<http:outbound-endpoint address="${authorization.service.brreg.address}">
+		<https:outbound-endpoint address="${authorization.service.brreg.address}"
+			connector-ref="httpsConnector">
 			<cxf:jaxws-client clientClass="no.brreg.saksys.grunndata.ws.RolleService"
 				port="RolleSoapPort" wsdlLocation="classpath:/wsdl/Rolleutskrift.wsdl"
 				operation="hentRolle" />
 					
-		</http:outbound-endpoint>
+		</https:outbound-endpoint>
 
 		<!-- The response needs to be transformed to our json format -->
 		<response>
